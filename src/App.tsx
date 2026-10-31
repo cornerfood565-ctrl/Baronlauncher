@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import {
   Activity, ArrowDownToLine, ArrowLeft, ArrowRight, Bell, Box, Check,
   ChevronDown, ChevronRight, CircleHelp, CloudDownload, Code2, Cpu,
@@ -137,7 +137,7 @@ function App() {
   );
 }
 
-function PageHeading({eyebrow, title, description, action}: {eyebrow: string; title: string; description: string; action?: React.ReactNode}) {
+function PageHeading({eyebrow, title, description, action}: {eyebrow: string; title: string; description: string; action?: ReactNode}) {
   return <div className="page-heading"><div><div className="eyebrow">{eyebrow}</div><h1>{title}</h1><p>{description}</p></div>{action}</div>;
 }
 
