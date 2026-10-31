@@ -1,4 +1,4 @@
-name: Build Baron Launcher UI
+name: Build Baron Launcher
 on:
   push:
     branches: [main]
@@ -12,6 +12,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm install
-      - run: npm run build
+      - name: Build launcher dashboard
+        run: |
+          npm install
+          npm run build
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.12.1'
+      - name: Test and build Java core
+        run: gradle :launcher-core:clean :launcher-core:test :launcher-core:build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: baron-launcher-core-jar
+          path: launcher-core/build/libs/*.jar
+          if-no-files-found: error
