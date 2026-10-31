@@ -11,7 +11,7 @@ tasks.register("printBuildInfo") {
     group = "help"
     description = "Prints Baron Launcher build information."
     doLast {
-        println("Baron Launcher $version")
+        println("Baron Launcher " + project.version)
         println("Modules: launcher-core")
     }
 }
