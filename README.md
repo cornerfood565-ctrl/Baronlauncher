@@ -17,8 +17,8 @@ A premium Minecraft Java Edition launcher project.
 ## Requirements
 
 - Node.js 22+
-- Java JDK 21
-- Gradle 8.12.1 (or use the Gradle version configured in CI)
+- Java JDK 25
+- Gradle 9.1.0 (or use the Gradle version configured in CI)
 
 ## Run the dashboard
 
