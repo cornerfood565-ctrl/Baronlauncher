@@ -1,21 +1,19 @@
 name: Build Baron Launcher
 on:
   push:
-    branches: [main]
+    branches: [main, electron-desktop-foundation]
   pull_request:
     branches: [main]
+
+permissions:
+  contents: read
+
 jobs:
-  build:
+  core:
+    name: Test Java core
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Build launcher dashboard
-        run: |
-          npm install
-          npm run build
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -29,4 +27,22 @@ jobs:
         with:
           name: baron-launcher-core-jar
           path: launcher-core/build/libs/*.jar
+          if-no-files-found: error
+
+  windows-installer:
+    name: Build Windows installer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Build Windows installer
+        run: npm run dist:win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BARON-LAUNCHER-Windows-Setup
+          path: release/*.exe
           if-no-files-found: error
