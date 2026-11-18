@@ -25,10 +25,11 @@ function isAllowedExternalUrl(value) {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1440,
-    height: 900,
+    width: 1280,
+    height: 800,
     minWidth: 1100,
     minHeight: 700,
+    frame: false,
     backgroundColor: "#090a0c",
     show: false,
     title: "BARON LAUNCHER",
@@ -64,7 +65,7 @@ function createWindow() {
   }
 }
 
-ipcMain.handle("baron:app-info", () => ({
+ipcMain.handle("baron:window-control", (event, action) => {\n  const win = BrowserWindow.fromWebContents(event.sender);\n  if (!win) return false;\n  if (action === "minimize") win.minimize();\n  else if (action === "toggle-maximize") win.isMaximized() ? win.unmaximize() : win.maximize();\n  else if (action === "close") win.close();\n  else throw new Error("Unsupported window action.");\n  return true;\n});\n\nipcMain.handle("baron:app-info", () => ({
   name: app.getName(),
   version: app.getVersion(),
   platform: process.platform,
