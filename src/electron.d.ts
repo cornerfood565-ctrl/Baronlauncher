@@ -3,7 +3,7 @@ export {};
 declare global {
   interface Window {
     baron: {
-      getAppInfo: () => Promise<{
+      windowControl: (action: "minimize" | "toggle-maximize" | "close") => Promise<boolean>;\n      getAppInfo: () => Promise<{
         name: string;
         version: string;
         platform: string;
