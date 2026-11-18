@@ -45,9 +45,7 @@ function createWindow() {
 
   mainWindow.once("ready-to-show", () => mainWindow.show());
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (isAllowedExternalUrl(url)) {
-      void shell.openExternal(url);
-    }
+    if (isAllowedExternalUrl(url)) void shell.openExternal(url);
     return { action: "deny" };
   });
 
@@ -65,7 +63,17 @@ function createWindow() {
   }
 }
 
-ipcMain.handle("baron:window-control", (event, action) => {\n  const win = BrowserWindow.fromWebContents(event.sender);\n  if (!win) return false;\n  if (action === "minimize") win.minimize();\n  else if (action === "toggle-maximize") win.isMaximized() ? win.unmaximize() : win.maximize();\n  else if (action === "close") win.close();\n  else throw new Error("Unsupported window action.");\n  return true;\n});\n\nipcMain.handle("baron:app-info", () => ({
+ipcMain.handle("baron:window-control", (event, action) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (!win) return false;
+  if (action === "minimize") win.minimize();
+  else if (action === "toggle-maximize") win.isMaximized() ? win.unmaximize() : win.maximize();
+  else if (action === "close") win.close();
+  else throw new Error("Unsupported window action.");
+  return true;
+});
+
+ipcMain.handle("baron:app-info", () => ({
   name: app.getName(),
   version: app.getVersion(),
   platform: process.platform,
@@ -93,7 +101,6 @@ ipcMain.handle("baron:open-external", async (_event, value) => {
 
 app.whenReady().then(() => {
   createWindow();
-
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
