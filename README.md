@@ -1,39 +1,63 @@
-# Baron Launcher
+# BARON LAUNCHER
 
-A premium Minecraft Java Edition launcher project.
+A premium Minecraft Java Edition launcher for Windows, built with React, TypeScript, Vite and Electron.
 
-## Current milestone — UI + Gradle core foundation
+## Current foundation
 
-- React + TypeScript + Vite dashboard
+- React 19 + TypeScript + Vite renderer
+- Electron 45 desktop shell
 - Black / titanium / red visual system
-- Compact sidebar and large dashboard
 - Home, Versions, Mods, Modpacks, Profiles, Customization and Settings screens
-- Gradle multi-project build
-- Java 21 launcher-core module
-- CI workflow builds the dashboard and tests/packages the Java core
+- Secure preload bridge with context isolation, sandboxing and Node integration disabled
+- Native game-directory picker
+- Windows x64 NSIS installer configuration
+- Existing Gradle Java core foundation and CI workflow
 
-**Important:** This is still an early development foundation. The Java core currently starts and reports its build status. Minecraft installation, Microsoft authentication, launching the game process, mod provider integrations, backups and automatic updates are not implemented yet.
+The desktop shell is now integrated, but this is not yet a complete playable launcher. Minecraft version installation, Microsoft sign-in, mod-provider integrations, profile persistence, game process launching, backups and automatic updates are still implementation milestones.
 
 ## Requirements
 
+- Windows 10 or 11 (Windows 11 is the primary development target)
 - Node.js 22+
-- Java JDK 25
-- Gradle 9.1.0 (or use the Gradle version configured in CI)
+- npm
+- Java JDK 25 and Gradle 9.1.0 for the existing Java core tasks
 
-## Run the dashboard
+## Run the desktop application
 
 ```bash
 npm install
+npm run dev:desktop
+```
+
+The Vite renderer and Electron desktop window start together.
+
+To run only the browser-based dashboard:
+
+```bash
 npm run dev
 ```
 
-## Build the dashboard
+## Build
+
+Build the React renderer:
 
 ```bash
 npm run build
 ```
 
-## Build and test the Java core
+Create a Windows x64 installer:
+
+```bash
+npm run dist:win
+```
+
+The NSIS installer is generated in `release/`. To create an unpacked test build:
+
+```bash
+npm run dist:dir
+```
+
+## Existing Java core
 
 From the repository root:
 
@@ -41,14 +65,21 @@ From the repository root:
 gradle :launcher-core:clean :launcher-core:test :launcher-core:build
 ```
 
-Run the generated core JAR:
+The generated JAR is written to `launcher-core/build/libs/`.
 
-```bash
-java -jar launcher-core/build/libs/baron-launcher-core-0.1.0.jar
-```
+## Desktop security
 
-The GitHub Actions build uploads the Java JAR as an artifact after a successful build.
+- Renderer Node.js integration is disabled.
+- Context isolation and Chromium sandboxing are enabled.
+- Renderer capabilities are exposed through a small preload API only.
+- New windows are denied.
+- External navigation is restricted to an HTTPS host allowlist.
+- The renderer cannot directly access the filesystem or spawn processes.
 
-## Planned desktop packaging
+## Current preload API
 
-Electron integration will connect the React dashboard to the Java core in a later milestone. The Java core will then gain the Minecraft version installer, Microsoft account flow, profile manager, mod integrations and game process controller.
+- `window.baron.getAppInfo()`
+- `window.baron.selectDirectory()`
+- `window.baron.openExternal(url)`
+
+The main process validates external URLs before opening them. Do not place Microsoft client secrets or other credentials in the renderer or source repository.
