@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import {
   Activity, ArrowRight, Bell, Box, Check, ChevronDown, ChevronRight,
   CircleHelp, CloudDownload, Code2, Cpu, Folder, Gamepad2, HardDrive,
